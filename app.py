@@ -11,7 +11,7 @@ load_dotenv()
 os.environ['HF_TOKEN']=os.getenv("HF_TOKEN")
 app=FastAPI()
 #embeddings
-embeddings=HuggingFaceEmbeddings(model='all-MiniLM-L6-v2')
+embeddings=HuggingFaceEmbeddings(model='sentence-transformers/all-MiniLM-L6-v2')
 #load vector database
 vector_store=FAISS.load_local('faiss3_index',
                               embeddings,
