@@ -8,7 +8,7 @@ from pydantic import BaseModel
 import os 
 from dotenv import load_dotenv
 load_dotenv()
-os.environ['HF_TOKEN']=os.getenv("HF_TOKEN")
+#os.environ['HF_TOKEN']=os.getenv("HF_TOKEN")
 app=FastAPI()
 #embeddings
 embeddings=HuggingFaceEmbeddings(model='sentence-transformers/all-MiniLM-L6-v2')
