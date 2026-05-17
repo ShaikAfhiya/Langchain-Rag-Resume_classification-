@@ -1,86 +1,72 @@
-from langchain_groq import ChatGroq
-import pandas as pd
+
 from fastapi import FastAPI
+from pydantic import BaseModel
+
+from dotenv import load_dotenv
+
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from sentence_transformers import CrossEncoder
-from pydantic import BaseModel
-import os 
-from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+
+# load environment variables
 load_dotenv()
-#os.environ['HF_TOKEN']=os.getenv("HF_TOKEN")
-app=FastAPI()
-#embeddings
-embeddings=HuggingFaceEmbeddings(model='sentence-transformers/all-MiniLM-L6-v2')
-#load vector database
-vector_store=FAISS.load_local('faiss3_index',
-                              embeddings,
-                              allow_dangerous_deserialization=True)
-#retrieve docs
-retriever = vector_store.as_retriever(search_kwargs={"k": 3})
-#re ranking
-# reranker model
-reranker = CrossEncoder(
-    "cross-encoder/ms-marco-MiniLM-L-6-v2"
+
+# fastapi app
+app = FastAPI()
+
+# embeddings
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
 
-# llm
+# load faiss vector store
+vector_store = FAISS.load_local(
+    'faiss3_index',
+    embeddings,
+    allow_dangerous_deserialization=True
+)
+
+# retriever
+retriever = vector_store.as_retriever(
+    search_kwargs={"k": 2}
+)
+
+# groq llm
 llm = ChatGroq(
-    model="llama-3.3-70b-versatile",
+    model_name="llama-3.3-70b-versatile",
     temperature=0
 )
 
-# request body
-class Query(BaseModel):
+# request schema
+class QueryRequest(BaseModel):
     question: str
 
-# ask route
+# rag endpoint
 @app.post("/")
-def ask_question(query: Query):
+def ask_question(request: QueryRequest):
 
     # retrieve docs
-    docs = retriever.invoke(query.question)
+    docs = retriever.invoke(request.question)
 
-    # prepare pairs
-    pairs = [
-        (query.question, doc.page_content)
-        for doc in docs
-    ]
+    # combine context
+    context = "\n\n".join([doc.page_content for doc in docs])
 
-    # rerank scores
-    scores = reranker.predict(pairs)
-
-    # combine docs + scores
-    ranked_docs = sorted(
-        zip(scores, docs),
-        key=lambda x: x[0],
-        reverse=True
-    )
-
-    # top 3 reranked docs
-    top_docs = [doc for score, doc in ranked_docs[:3]]
-
-    # context
-    context = "\n\n".join(
-        [doc.page_content for doc in top_docs]
-    )
-
-    # final prompt
+    # prompt
     prompt = f"""
-    Answer the question using the context below.
+    Answer the question based only on the context below.
 
     Context:
     {context}
 
     Question:
-    {query.question}
+    {request.question}
     """
 
     # llm response
     response = llm.invoke(prompt)
 
     return {
-        "question": query.question,
-        "response": response.content
+        "question": request.question,
+        "answer": response.content
     }
 
