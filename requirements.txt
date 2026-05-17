@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+pandas
+numpy
+langchain
+langchain-community
+langchain-core
+langchain-huggingface
+langchain-ollama
+faiss-cpu
+sentence-transformers
+transformers
+torch
+pydantic
+python-dotenv
+ollama
