@@ -1,4 +1,4 @@
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 import pandas as pd
 from fastapi import FastAPI
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -25,8 +25,8 @@ reranker = CrossEncoder(
 )
 
 # llm
-llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
+llm = ChatGroq(
+    model="llama-3.3-70b-versatile",
     temperature=0
 )
 
