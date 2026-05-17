@@ -1,4 +1,4 @@
-from langchain_ollama import ChatOllama
+from langchain_google_genai import ChatGoogleGenerativeAI
 import pandas as pd
 from fastapi import FastAPI
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -25,8 +25,8 @@ reranker = CrossEncoder(
 )
 
 # llm
-llm = ChatOllama(
-    model="gemma:2b",
+llm = ChatGoogleGenerativeAI(
+    model="gemini-1.5-flash",
     temperature=0
 )
 
