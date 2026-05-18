@@ -17,12 +17,12 @@ python-dotenv'''
 
 fastapi
 uvicorn
-pandas
-numpy
 langchain
-langchain-core
 langchain-community
+langchain-core
 langchain-groq
+faiss-cpu
 pydantic
 python-dotenv
+numpy
 requests
