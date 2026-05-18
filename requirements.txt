@@ -1,4 +1,4 @@
-'''fastapi
+fastapi
 uvicorn
 pandas
 numpy
@@ -12,17 +12,4 @@ sentence-transformers
 transformers
 torch
 pydantic
-python-dotenv'''
-
-
-fastapi
-uvicorn
-langchain
-langchain-community
-langchain-core
-langchain-groq
-faiss-cpu
-pydantic
 python-dotenv
-numpy
-requests
