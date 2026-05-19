@@ -1,35 +1,20 @@
-
 from fastapi import FastAPI
 from pydantic import BaseModel
 
 from dotenv import load_dotenv
-
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
 from langchain_groq import ChatGroq
 
-# load environment variables
+import json
+
+# load env variables
 load_dotenv()
 
 # fastapi app
 app = FastAPI()
 
-# embeddings
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/paraphrase-MiniLM-L3-v2"
-)
-
-# load faiss vector store
-vector_store = FAISS.load_local(
-    'faiss3_index',
-    embeddings,
-    allow_dangerous_deserialization=True
-)
-
-# retriever
-retriever = vector_store.as_retriever(
-    search_kwargs={"k": 2}
-)
+# load documents
+with open("documents.json", "r") as f:
+    documents = json.load(f)
 
 # groq llm
 llm = ChatGroq(
@@ -41,15 +26,24 @@ llm = ChatGroq(
 class QueryRequest(BaseModel):
     question: str
 
-# rag endpoint
+# api route
 @app.post("/")
 def ask_question(request: QueryRequest):
 
-    # retrieve docs
-    docs = retriever.invoke(request.question)
+    question = request.question.lower()
 
-    # combine context
-    context = "\n\n".join([doc.page_content for doc in docs])
+    matched_docs = []
+
+    # simple retrieval
+    for doc in documents:
+
+        text = doc["content"].lower()
+
+        if any(word in text for word in question.split()):
+            matched_docs.append(doc["content"])
+
+    # top docs
+    context = "\n\n".join(matched_docs[:2])
 
     # prompt
     prompt = f"""
@@ -69,4 +63,3 @@ def ask_question(request: QueryRequest):
         "question": request.question,
         "answer": response.content
     }
-
