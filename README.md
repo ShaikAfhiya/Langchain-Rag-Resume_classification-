@@ -1,6 +1,6 @@
 AI Resume Analyzer RAG System
 
-A production-style Retrieval-Augmented Generation (RAG) project built using LangChain, FastAPI, FAISS, HuggingFace Embeddings, Re-ranking, and Ollama.
+A production-style Retrieval-Augmented Generation (RAG) project built using LangChain, FastAPI, FAISS, HuggingFace Embeddings,and Groq.
 
 This project performs intelligent semantic search over resume data and answers user queries using Retrieval-Augmented Generation.
 
@@ -9,7 +9,6 @@ Resume semantic search using FAISS
 RAG pipeline using LangChain
 FastAPI backend
 HuggingFace sentence embeddings
-Cross-encoder re-ranking
 Local LLM inference using Ollama
 REST API support
 Resume/job skill retrieval
@@ -21,8 +20,7 @@ LangChain
 FAISS
 HuggingFace Embeddings
 Sentence Transformers
-Ollama
-Cross Encoder Re-ranking
+Groq
 Project Structure
 project/
 │
@@ -66,13 +64,12 @@ cd YOUR_PROJECT_NAME
 Install dependencies:
 
 pip install -r requirements.txt
-Run Ollama
+Run Groq 
 
-Start Ollama model:
-
-ollama run gemma:2b
+Start Groq model:
 
 You can also use:
+Ollama:
 
 tinyllama
 llama3
@@ -107,7 +104,6 @@ Retrieval-Augmented Generation (RAG)
 Semantic Search
 Vector Databases
 Embeddings
-Re-ranking
 Context Retrieval
 LLM Inference
 REST APIs
