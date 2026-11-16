@@ -51,15 +51,6 @@ Cross Encoder Re-ranking
 Best Relevant Chunks
    ↓
 LLM Response Generation
-Installation
-
-Clone repository:
-
-git clone YOUR_GITHUB_REPO_LINK
-
-Move into project folder:
-
-cd YOUR_PROJECT_NAME
 
 Install dependencies:
 
